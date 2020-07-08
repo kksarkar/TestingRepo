@@ -20,6 +20,8 @@ public interface UserService
 
 	public Map<String, Object> getConfiguration();
 
+	public User getUserForTesting();
+
 	
 	
 }

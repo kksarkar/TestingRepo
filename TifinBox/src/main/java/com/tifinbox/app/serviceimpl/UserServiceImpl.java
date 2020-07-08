@@ -125,7 +125,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 		UserRoleMapping userRole = new UserRoleMapping();
 
-		if (user.getUserType().equals("customer")) {
+		if (user.getUserType().equals("customer")) 
+		{
 			Role role = roleRepo.findByName("Customer");
 
 			userRole.setRole(role);
@@ -145,7 +146,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		}
 
 		Set<com.tifinbox.app.model.Service> services = user.getServices();
-		for (com.tifinbox.app.model.Service service : services) {
+		for (com.tifinbox.app.model.Service service : services) 
+		{
 			ServiceCategory sc = serviceCategoryRepo.findById(service.getServiceCategory().getId())
 					.orElseThrow(() -> new ResourceNotFoundException("Service Category not found."));
 			service.setServiceCategory(sc);
@@ -253,6 +255,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     	
     	return map;
     	
+	}
+
+	@Override
+	public User getUserForTesting() 
+	{
+	
+		return userRepo.findById(1).orElse(new User());
 	}
 
 }

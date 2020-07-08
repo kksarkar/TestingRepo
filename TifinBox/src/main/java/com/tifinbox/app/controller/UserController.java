@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 public class UserController 
 {
     
@@ -67,6 +67,65 @@ public class UserController
 		return userService.getConfiguration();	
 		
 	}
+	@GetMapping("/user/getUser")
+	public User getUser()
+	{
+		
+		logger.debug("in UserController -> getUser() "); 
+		return userService.getUserForTesting();
+		
+	}
 	
 	
 }
+
+
+/*
+
+Testing:
+
+1) we can pass this json for /user/registation API
+
+{
+ 
+    "fullName": "Javed",
+    "username": "javed",
+    "password": "123456",
+    "confirmPassword": "123456",
+    "services": [
+        {
+
+            "serviceCategory": 
+			{
+                "id": 3
+            }
+        },
+        {
+            "serviceCategory": 
+			{
+                "id": 2
+            }
+        }
+    ],
+    "advanceMoney": 500,
+    "tiffines": [
+        {
+            
+            "tiffinType": 
+			{
+                "id": 1
+            
+            },
+            "tiffinfood": "Shak rotli",
+            "tiffinRs": 50
+        }
+        
+    ],
+    "city": "Mahuva",
+    "address": "Fatima soc",
+    
+    "userType": "vendor"
+    
+}
+
+*/
