@@ -19,7 +19,7 @@ public class UserRoleMappingCustomRepoImpl implements UserRoleMappingCustomRepo
 	private EntityManager entityManager;
 	
 	@Override
-	public List<String> findUserRoles(int userId) 
+	public String findUserRoles(int userId) 
 	{
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		
@@ -29,7 +29,7 @@ public class UserRoleMappingCustomRepoImpl implements UserRoleMappingCustomRepo
 		
 		query.select(  userRoleMappingRoot.get("role").get("name")).where(cb.equal(userRoleMappingRoot.get("user").get("id"), userId))  ;
 		
-		return entityManager.createQuery(query).getResultList();
+		return entityManager.createQuery(query).getSingleResult();
 	}
 
 }

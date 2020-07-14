@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController 
 {
     
@@ -67,6 +67,7 @@ public class UserController
 		return userService.getConfiguration();	
 		
 	}
+	
 	@GetMapping("/user/getUser")
 	public User getUser()
 	{
@@ -76,6 +77,16 @@ public class UserController
 		
 	}
 	
+	@GetMapping("/user/getVendors/{search}")
+	public List<User> getVendors(@PathVariable String search)
+	{
+		
+		logger.debug("in UserController -> getVendors() "); 
+		return userService.getVendors(search);
+		
+	}
+	
+	   
 	
 }
 

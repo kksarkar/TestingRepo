@@ -19,6 +19,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import net.bytebuddy.implementation.bind.annotation.Default;
 
@@ -39,10 +41,12 @@ public class User {
 	private String username;
 
 	@Column
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 
 	@Column
 	@Transient
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String confirmPassword;
 
 	/*@OneToMany()
@@ -55,6 +59,8 @@ public class User {
 	//@JsonIgnore
 	private Set<Service> services;
 
+	@Column
+	private String tiffinServiceName;
 	
 	@Column
 	private Integer advanceMoney;
@@ -84,6 +90,13 @@ public class User {
 
 	@Column
 	private String address;
+	
+	@Column
+	private Float lat;
+	
+	@Column
+	private Float lng;
+	
 
 	@Column
 	private String profileUrl;
@@ -270,6 +283,30 @@ public class User {
 
 	public void setServices(Set<Service> services) {
 		this.services = services;
+	}
+
+	public String getTiffinServiceName() {
+		return tiffinServiceName;
+	}
+
+	public void setTiffinServiceName(String tiffinServiceName) {
+		this.tiffinServiceName = tiffinServiceName;
+	}
+
+	public Float getLat() {
+		return lat;
+	}
+
+	public void setLat(Float lat) {
+		this.lat = lat;
+	}
+
+	public Float getLng() {
+		return lng;
+	}
+
+	public void setLng(Float lng) {
+		this.lng = lng;
 	}
 
 	

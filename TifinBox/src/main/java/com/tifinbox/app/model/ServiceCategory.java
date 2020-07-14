@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 
 
@@ -31,7 +32,9 @@ public class ServiceCategory
     @Column
 	private String categoryName;
     
-  
+    @Transient
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private boolean flag;
     
 
 	public Integer getId() {
@@ -48,6 +51,14 @@ public class ServiceCategory
 
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
+	}
+
+	public boolean isFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 
 	

@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRoleMappingCustomRepo
 {
-	public List<String> findUserRoles(int userId);
+	public String findUserRoles(int userId);
 }

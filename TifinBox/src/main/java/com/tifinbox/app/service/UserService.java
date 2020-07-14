@@ -22,6 +22,8 @@ public interface UserService
 
 	public User getUserForTesting();
 
+	public List<User> getVendors(String search);
+
 	
 	
 }

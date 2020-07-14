@@ -134,8 +134,20 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 			userRepo.save(newUser);
 			userRoleMapping.save(userRole);
+			
+			final UserDetails userDetails = loadUserByUsername(user.getUsername());
 
-			return user;
+			if (userDetails == null) {
+				throw new Exception("INVALID_CREDENTIALS");
+			}
+
+			final String token = jwtTokenUtil.generateToken(userDetails);
+			
+			
+			newUser.setToken(token);
+			newUser.setUserType("Customer");
+
+			return newUser;
 		}
 		if (user.getUserType().equals("vendor")) {
 			Role role = roleRepo.findByName("Vendor");
@@ -146,17 +158,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		}
 
 		Set<com.tifinbox.app.model.Service> services = user.getServices();
+		Set<com.tifinbox.app.model.Service> savingServices = new HashSet<>(); 
+		
 		for (com.tifinbox.app.model.Service service : services) 
 		{
-			ServiceCategory sc = serviceCategoryRepo.findById(service.getServiceCategory().getId())
-					.orElseThrow(() -> new ResourceNotFoundException("Service Category not found."));
-			service.setServiceCategory(sc);
-			service.setUser(newUser);
-
-			services.add(service);
+			
+			if(service.getServiceCategory().isFlag())
+			{
+				ServiceCategory sc = serviceCategoryRepo.findById(service.getServiceCategory().getId())
+						.orElseThrow(() -> new ResourceNotFoundException("Service Category not found."));
+				service.setServiceCategory(sc);
+				service.setUser(newUser);
+	
+				savingServices.add(service);
+			}
 		}
-		newUser.setServices(services);
-
+		
+	
+		newUser.setServices(savingServices);
+		
 		Set<Tiffin> tiffins = new HashSet<>();
 		Set<Tiffin> tiffines = user.getTiffines();
 
@@ -171,14 +191,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		user.setTiffines(tiffins);
 
 		newUser.setTiffines(user.getTiffines());
-
+		
+		newUser.setTiffinServiceName(user.getTiffinServiceName());
 		newUser.setAdvanceMoney(user.getAdvanceMoney());
 
 		
 		newUser.setCity(user.getCity());
 
 		newUser.setAddress(user.getAddress());
-
+		newUser.setLat(user.getLat());
+		newUser.setLng(user.getLng());
 		userRepo.save(newUser);
 		userRoleMapping.save(userRole);
 
@@ -192,7 +214,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		final String token = jwtTokenUtil.generateToken(userDetails);
 		
 		newUser.setToken(token);
-		
+		newUser.setUserType("Vendor");
 		return newUser;
 
 	}
@@ -234,6 +256,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		User existingUser = userRepo.findByUsername(user.getUsername());
 		existingUser.setToken(token);
 
+		existingUser.setUserType( userRoleMapping.findUserRoles(existingUser.getId()));
+		
 		return existingUser;
 	}
 
@@ -262,6 +286,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	{
 	
 		return userRepo.findById(1).orElse(new User());
+	}
+
+	@Override
+	public List<User> getVendors(String search) 
+	{
+		
+		return userRepo.findBySearchCriteria();
 	}
 
 }
