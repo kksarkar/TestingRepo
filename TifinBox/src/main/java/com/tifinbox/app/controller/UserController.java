@@ -2,6 +2,8 @@ package com.tifinbox.app.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tifinbox.app.model.CustomUser;
 import com.tifinbox.app.model.User;
 import com.tifinbox.app.repo.UserRepo;
 import com.tifinbox.app.service.UserService;
@@ -20,6 +23,7 @@ import com.tifinbox.app.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +37,6 @@ public class UserController
 {
     
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
 
 
 	@Autowired
@@ -68,21 +71,22 @@ public class UserController
 		
 	}
 	
-	@GetMapping("/user/getUser")
-	public User getUser()
-	{
-		
-		logger.debug("in UserController -> getUser() "); 
-		return userService.getUserForTesting();
-		
-	}
 	
-	@GetMapping("/user/getVendors/{search}")
-	public List<User> getVendors(@PathVariable String search)
+	@GetMapping("/user/getVendors/{search}/{lat}/{lng}")
+	public List<User> getVendors(@PathVariable String search, @PathVariable Float lat, @PathVariable Float lng)
 	{
 		
 		logger.debug("in UserController -> getVendors() "); 
-		return userService.getVendors(search);
+		return userService.getVendors(search,lat,lng);
+		
+	}
+	@GetMapping("/user/getPerson")
+	public List<User> getVendors1()
+	{
+		
+		logger.debug("in UserController -> getVendors() "); 
+		//return userService.getVendors(search,lat,lng);
+		return userRepo.findAll();
 		
 	}
 	

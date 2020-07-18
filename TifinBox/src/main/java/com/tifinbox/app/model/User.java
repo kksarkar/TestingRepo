@@ -49,6 +49,13 @@ public class User {
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String confirmPassword;
 
+	
+	
+	@Transient
+	private Float distanceInKM;
+	
+	 
+	
 	/*@OneToMany()
 	@Transient
 	@JsonIgnore
@@ -62,6 +69,7 @@ public class User {
 	@Column
 	private String tiffinServiceName;
 	
+
 	@Column
 	private Integer advanceMoney;
 /*
@@ -71,6 +79,9 @@ public class User {
 	private Set<TiffinCategory> tiffinCategory;
 */
 	
+	
+	
+	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade=CascadeType.ALL   )
 	// @Transient
 	// @JsonIgnore
@@ -79,6 +90,7 @@ public class User {
 	@Transient
 	@JsonIgnore
     private String tiffinfood;
+	
     
 	@Transient
 	@JsonIgnore
@@ -104,11 +116,13 @@ public class User {
 	@Column
 	private String isActive;
 
-	@Transient
+	/*
 	@Column
 	private Role role;
-
-	@Transient
+*/
+	
+	
+	
 	@Column
 	private String userType;
 
@@ -116,9 +130,15 @@ public class User {
 	@Column
 	private String token;
 
+	
 	@Column(name = "time_stamp", nullable = false, updatable = false)
 	@CreationTimestamp
 	private Date timeStamp;
+
+	public User()
+	{
+	
+	}
 
 	public Integer getId() {
 		return id;
@@ -245,13 +265,13 @@ public class User {
 		this.isActive = isActive;
 	}
 
-	public Role getRole() {
+	/*public Role getRole() {
 		return role;
 	}
 
 	public void setRole(Role role) {
 		this.role = role;
-	}
+	}*/
 
 	public String getUserType() {
 		return userType;
@@ -308,6 +328,18 @@ public class User {
 	public void setLng(Float lng) {
 		this.lng = lng;
 	}
+
+	public Float getDistanceInKM() {
+		return distanceInKM;
+	}
+
+	public void setDistanceInKM(Float distanceInKM) {
+		this.distanceInKM = distanceInKM;
+	}
+
+
+
+
 
 	
 	

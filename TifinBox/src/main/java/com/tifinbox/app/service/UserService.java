@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.tifinbox.app.model.CustomUser;
 import com.tifinbox.app.model.User;
 
 
@@ -20,9 +21,9 @@ public interface UserService
 
 	public Map<String, Object> getConfiguration();
 
-	public User getUserForTesting();
+	
 
-	public List<User> getVendors(String search);
+	public List<User> getVendors(String search, Float lat, Float lng);
 
 	
 	

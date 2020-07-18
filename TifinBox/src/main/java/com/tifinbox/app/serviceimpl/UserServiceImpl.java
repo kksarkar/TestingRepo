@@ -11,13 +11,18 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.persistence.EntityManager;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -29,10 +34,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
 import com.tifinbox.app.configure.JwtTokenUtil;
 import com.tifinbox.app.exception.CustomException;
 import com.tifinbox.app.exception.ResourceAlredyExistException;
 import com.tifinbox.app.exception.ResourceNotFoundException;
+import com.tifinbox.app.model.CustomUser;
 import com.tifinbox.app.model.Location;
 import com.tifinbox.app.model.Role;
 import com.tifinbox.app.model.ServiceCategory;
@@ -40,6 +47,7 @@ import com.tifinbox.app.model.Tiffin;
 import com.tifinbox.app.model.TiffinCategory;
 import com.tifinbox.app.model.User;
 import com.tifinbox.app.model.UserRoleMapping;
+
 import com.tifinbox.app.repo.LocationRepo;
 import com.tifinbox.app.repo.NotificationRepo;
 import com.tifinbox.app.repo.RoleRepo;
@@ -76,10 +84,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	@Autowired
 	ServiceCategoryRepo serviceCategoryRepo;
 
+
+	@Autowired
+	JdbcTemplate template ;
+	 
 	@Autowired
 	NotificationRepo notificationRepo;
 
-
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	
 	@Autowired
 	LocationRepo locationRepo;
 	
@@ -181,9 +196,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		Set<Tiffin> tiffines = user.getTiffines();
 
 		for (Tiffin tiffin : tiffines) {
-			TiffinCategory tc = tiffinCategoryRepo.findById(tiffin.getTiffinType().getId())
+			TiffinCategory tc = tiffinCategoryRepo.findById(tiffin.getTiffinCategory().getId())
 					.orElseThrow(() -> new ResourceNotFoundException("Tifin Category not found."));
-			tiffin.setTiffinType(tc);
+			tiffin.setTiffinCategory(tc);
 			tiffin.setUser(newUser);
 			tiffins.add(tiffin);
 		}
@@ -282,17 +297,108 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	}
 
 	@Override
-	public User getUserForTesting() 
+	public List<User> getVendors(String search, Float lat, Float lng) 
 	{
-	
-		return userRepo.findById(1).orElse(new User());
+		//sreturn userRepo.findNearByMe1(lat,lng);
+		
+		List<User> result = new ArrayList<User>();
+		
+		/*if(search != "null" && lat >0 & lng >0)
+		{
+			System.out.println(search);
+			System.out.println("in all ctire");
+		}
+		else*/
+		if ( lat >0 & lng >0)
+		{
+			
+			System.out.println("in near by me..");
+			
+			int withinKm=200;
+			
+			SqlRowSet rs = template.queryForRowSet("SELECT  z.id, p.distance_unit * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.latpoint)) * COS(RADIANS(z.lat)) * COS(RADIANS(p.longpoint) - RADIANS(z.lng))+ SIN(RADIANS(p.latpoint))* SIN(RADIANS(z.lat))))) AS distance_in_km FROM user AS z JOIN (   /* these are the query parameters */ SELECT  21.0953  AS latpoint,  71.7504 AS longpoint, "+withinKm+" AS radius, 111.045 AS distance_unit) AS p ON 1=1 WHERE z.lat BETWEEN p.latpoint  - (p.radius / p.distance_unit) AND p.latpoint  + (p.radius / p.distance_unit) AND z.lng BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint)))) AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint)))) and is_active = 'Y' and user_type='Vendor' ORDER BY distance_in_km");
+			System.out.print("get data...");
+			while(rs.next())
+			{
+				User user = new User();
+				System.out.println(rs.getInt(1));
+				user = userRepo.findById(rs.getInt(1)).orElse(null);
+				user.setDistanceInKM(rs.getFloat(2));
+				result.add(user);
+			}
+			//result= userRepo.findNearByMe(lat,lng);
+		}
+		else if(search != null )
+		{
+			if(search.length()<=2)
+			{
+				throw new ResourceNotFoundException("Please enter more than 2 characters.");
+			}
+			else
+			{
+				System.out.println("in search");
+				result= userRepo.findBySearchText(search);	
+			}
+			
+		}
+		else
+		{
+			throw new ResourceNotFoundException("Please enter search string or allow location  to server you.");
+		}
+		
+		return result;
+		
 	}
 
+/*
 	@Override
 	public List<User> getVendors(String search) 
 	{
+		//return null;
 		
-		return userRepo.findBySearchCriteria();
-	}
+		 /*System.out.println(" -- finding all EmployeeSalary --");
+	      List<EmployeeSalary> list = repo.findBy();
+	      for (EmployeeSalary es : list) {
+	          System.out.printf("Name: %s, Salary: %s%n", es.getName(), es.getSalary());
+	      }
+	      
+		
+	      Query query = entityManager.createQuery("Select e from User e");
+	      List<User> list = query.getResultList();
+
+	      for(User e:list) {
+	         System.out.println("Employee NAME :"+e.getFullName());
+	      }
+	      Query query1 = entityManager.createQuery("Select e , 'extra' from User e");
+	      List<Object[]> list1 = query1.getResultList();
+
+	      System.out.println("ddd");
+	      for(Object[] result:list1) 
+	      {
+	    	    User name = (User) result[0];
+	    	    String count = ((String) result[1]);
+	    	    System.out.println(name);
+	    	    System.out.println(count);
+	    	    /*
+	    	    System.out.println(result[0]);
+	    	    System.out.println(result);*/
+	    	    
+	    	   // System.out.println(new Gson().toJson(name));
+		 // }
+	      
+	      /*
+	      List<Object[]> results = entityManager.createQuery("SELECT m.name AS name, COUNT(m) AS total FROM Man AS m GROUP BY m.name ORDER BY m.name ASC");
+	    	        .getResultList();
+	    	for (Object[] result : results) {
+	    	    String name = (String) result[0];
+	    	    int count = ((Number) result[1]).intValue();
+	    	}*/
+		
+		//return null;
+		
+		
+	//}*/
+	
+	
 
 }

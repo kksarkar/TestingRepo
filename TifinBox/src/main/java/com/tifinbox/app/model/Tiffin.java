@@ -28,7 +28,7 @@ public class Tiffin
     private Integer id;
    
     @OneToOne(fetch=FetchType.EAGER)
-    private TiffinCategory tiffinType;
+    private TiffinCategory tiffinCategory;
   
     @Column
     private String tiffinfood;
@@ -56,13 +56,15 @@ public class Tiffin
 	
 
 
-	public TiffinCategory getTiffinType() {
-		return tiffinType;
+
+
+	public TiffinCategory getTiffinCategory() {
+		return tiffinCategory;
 	}
 
 
-	public void setTiffinType(TiffinCategory tiffinType) {
-		this.tiffinType = tiffinType;
+	public void setTiffinCategory(TiffinCategory tiffinCategory) {
+		this.tiffinCategory = tiffinCategory;
 	}
 
 
