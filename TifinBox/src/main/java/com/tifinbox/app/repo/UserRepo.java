@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.tifinbox.app.model.CustomUser;
 import com.tifinbox.app.model.User;
 
 
@@ -31,9 +30,9 @@ public interface UserRepo extends JpaRepository<User, Integer>
 	//@Query(value = "SELECT *from user ", nativeQuery= true)
 	//@Query(value = "SELECT  z.id, p.distance_unit * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(p.latpoint)) * COS(RADIANS(z.lat)) * COS(RADIANS(p.longpoint) - RADIANS(z.lng))+ SIN(RADIANS(p.latpoint))* SIN(RADIANS(z.lat))))) AS distance_in_km FROM user AS z JOIN (   /* these are the query parameters */ SELECT  21.0953  AS latpoint,  71.7504 AS longpoint, 200.0 AS radius, 111.045 AS distance_unit) AS p ON 1=1 WHERE z.lat BETWEEN p.latpoint  - (p.radius / p.distance_unit) AND p.latpoint  + (p.radius / p.distance_unit) AND z.lng BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint)))) AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint)))) ORDER BY distance_in_km" ,nativeQuery = true)
 	//@Query(value = "SELECT  z.id, 'k' as z.distance_in_km from user z " ,nativeQuery = true)
-	@Query(value = "SELECT *from user ", nativeQuery= true)
+//	@Query(value = "SELECT *from user ", nativeQuery= true)
 	//@Query(value = "SELECT  com.tifinbox.app.model.CustomUser(z.city , z.username ) from User z ")
-	List<CustomUser> findNearByMe(Float lat, Float lng);
+	//List<CustomUser> findNearByMe(Float lat, Float lng);
 
 	@Query(value = "SELECT *from user", nativeQuery= true)
 	//@Query(value = "SELECT  com.tifinbox.app.model.CustomUser(z.city , z.username ) from User z ")

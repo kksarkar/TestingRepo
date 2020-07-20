@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.tifinbox.app.model.CustomUser;
 import com.tifinbox.app.model.User;
 
 

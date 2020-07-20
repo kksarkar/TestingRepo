@@ -39,7 +39,7 @@ import com.tifinbox.app.configure.JwtTokenUtil;
 import com.tifinbox.app.exception.CustomException;
 import com.tifinbox.app.exception.ResourceAlredyExistException;
 import com.tifinbox.app.exception.ResourceNotFoundException;
-import com.tifinbox.app.model.CustomUser;
+
 import com.tifinbox.app.model.Location;
 import com.tifinbox.app.model.Role;
 import com.tifinbox.app.model.ServiceCategory;
@@ -261,16 +261,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		try {
 			authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-		} catch (DisabledException e) {
-			throw new Exception("USER_DISABLED", e);
-		} catch (BadCredentialsException e) {
-			throw new Exception("INVALID_CREDENTIALS", e);
+		}
+		catch (DisabledException e) 
+		{
+			throw new Exception("User is disabled", e);
+		} 
+		catch (BadCredentialsException e) 
+		{
+			throw new Exception("Invalid user name or password.", e);
+		}
+		catch (Exception  e) 
+		{
+			throw new ResourceNotFoundException("Invalid user name or password.");
 		}
 
 		final UserDetails userDetails = loadUserByUsername(user.getUsername());
 
-		if (userDetails == null) {
-			throw new Exception("INVALID_CREDENTIALS");
+		if (userDetails == null) 
+		{
+			throw new Exception("Invalid user name or password.");
 		}
 
 		final String token = jwtTokenUtil.generateToken(userDetails);

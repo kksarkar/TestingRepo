@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tifinbox.app.model.CustomUser;
+
 import com.tifinbox.app.model.User;
 import com.tifinbox.app.repo.UserRepo;
 import com.tifinbox.app.service.UserService;
