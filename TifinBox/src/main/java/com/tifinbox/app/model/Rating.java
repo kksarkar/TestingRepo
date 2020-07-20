@@ -29,6 +29,10 @@ public class Rating {
 	@OneToOne
 	private User ratingBy;
 
+	@Column
+	private Float ratingPoints;
+	
+	
 	@OneToOne
 	private User ratingTo;
 
@@ -66,6 +70,14 @@ public class Rating {
 
 	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+
+	public Float getRatingPoints() {
+		return ratingPoints;
+	}
+
+	public void setRatingPoints(Float ratingPoints) {
+		this.ratingPoints = ratingPoints;
 	}
 
 }

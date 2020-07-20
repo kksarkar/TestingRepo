@@ -17,7 +17,10 @@ import com.tifinbox.app.model.User;
 public interface RatingRepo extends JpaRepository<Rating, Integer> 
 {
 
-	
-	
+    @Query("SELECT  AVG(u.ratingPoints) from Rating u where u.ratingTo.id= :id")
+   // @Query(value= "select avg(r.rating_points) from rating r where r.ratingTo.id = ?id" , nativeQuery = true)
+   // @Query("SELECT AVG(e.rating) FROM rating e WHERE e.routeUid = ?1") 
+	Float getTotalRating(Integer id);
+
 	
 }

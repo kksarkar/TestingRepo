@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,24 +28,30 @@ import net.bytebuddy.implementation.bind.annotation.Default;
 @Entity
 @Table(name = "user")
 
-public class User {
+public class User 
+{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer id;
 
-	@Column
+	
+	@Column(length=100)
 	private String fullName;
 
-	@Column
+	
+	
+	@Column(length=100)
 	private String username;
 
-	@Column
+	
+	@Column(length=100)
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 
-	@Column
+	
+	@Column(length=100)
 	@Transient
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String confirmPassword;
@@ -60,16 +67,18 @@ public class User {
 	@Transient
 	@JsonIgnore
 	private List<ServiceCategory> servicesCategory;*/
-
+	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER , cascade=CascadeType.ALL )
 	//@Transient
 	//@JsonIgnore
 	private Set<Service> services;
 
-	@Column
+	
+	
+	@Column(length=100)
 	private String tiffinServiceName;
 	
-
+	
 	@Column
 	private Integer advanceMoney;
 /*
@@ -87,15 +96,7 @@ public class User {
 	// @JsonIgnore
 	private Set<Tiffin> tiffines;
 
-	@Transient
-	@JsonIgnore
-    private String tiffinfood;
 	
-    
-	@Transient
-	@JsonIgnore
-    private Integer tiffinRs;
-    
 	
 	
 	private String city;
@@ -130,6 +131,17 @@ public class User {
 	@Column
 	private String token;
 
+	@Transient
+	private Float totalRating;
+	
+
+	@Transient
+	private Integer totalReviews;
+	
+	
+	@Transient
+	private Integer ratingCount;
+	
 	
 	@Column(name = "time_stamp", nullable = false, updatable = false)
 	@CreationTimestamp
@@ -215,21 +227,6 @@ public class User {
 
 	
 	
-	public String getTiffinfood() {
-		return tiffinfood;
-	}
-
-	public void setTiffinfood(String tiffinfood) {
-		this.tiffinfood = tiffinfood;
-	}
-
-	public Integer getTiffinRs() {
-		return tiffinRs;
-	}
-
-	public void setTiffinRs(Integer tiffinRs) {
-		this.tiffinRs = tiffinRs;
-	}
 
 
 
@@ -336,6 +333,31 @@ public class User {
 	public void setDistanceInKM(Float distanceInKM) {
 		this.distanceInKM = distanceInKM;
 	}
+
+	public Float getTotalRating() {
+		return totalRating;
+	}
+
+	public void setTotalRating(Float totalRating) {
+		this.totalRating = totalRating;
+	}
+
+	public Integer getTotalReviews() {
+		return totalReviews;
+	}
+
+	public void setTotalReviews(Integer totalReviews) {
+		this.totalReviews = totalReviews;
+	}
+
+	public Integer getRatingCount() {
+		return ratingCount;
+	}
+
+	public void setRatingCount(Integer ratingCount) {
+		this.ratingCount = ratingCount;
+	}
+
 
 
 

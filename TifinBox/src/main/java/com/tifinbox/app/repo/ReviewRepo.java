@@ -17,6 +17,8 @@ import com.tifinbox.app.model.User;
 public interface ReviewRepo extends JpaRepository<Review, Integer> 
 {
 
+	Integer countByReviewTo(User user);
+
 	
 	
 	

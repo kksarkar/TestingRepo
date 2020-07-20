@@ -14,6 +14,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.sun.istack.NotNull;
+
 import net.bytebuddy.implementation.bind.annotation.Default;
 
 @Entity
@@ -32,6 +34,10 @@ public class Review {
 	@OneToOne
 	private User reviewTo;
 
+	@NotNull
+	private String reviewText;
+	
+	
 	@Column(name = "time_stamp", nullable = false, updatable = false)
 	@CreationTimestamp
 	private Date timeStamp;
@@ -66,6 +72,14 @@ public class Review {
 
 	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+
+	public String getReviewText() {
+		return reviewText;
+	}
+
+	public void setReviewText(String reviewText) {
+		this.reviewText = reviewText;
 	}
 
 }

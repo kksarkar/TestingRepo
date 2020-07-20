@@ -50,6 +50,8 @@ import com.tifinbox.app.model.UserRoleMapping;
 
 import com.tifinbox.app.repo.LocationRepo;
 import com.tifinbox.app.repo.NotificationRepo;
+import com.tifinbox.app.repo.RatingRepo;
+import com.tifinbox.app.repo.ReviewRepo;
 import com.tifinbox.app.repo.RoleRepo;
 import com.tifinbox.app.repo.ServiceCategoryRepo;
 import com.tifinbox.app.repo.TiffinCategoryRepo;
@@ -75,6 +77,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	@Autowired
 	UserRepo userRepo;
 
+	@Autowired
+	RatingRepo ratingRepo;
+
+	@Autowired
+	ReviewRepo reviewRepo;
+
+	
 	@Autowired
 	LocationRepo cityRepo;
 
@@ -324,6 +333,20 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 				System.out.println(rs.getInt(1));
 				user = userRepo.findById(rs.getInt(1)).orElse(null);
 				user.setDistanceInKM(rs.getFloat(2));
+				
+			//	reviewTo
+				
+				SqlRowSet rsGetRating = template.queryForRowSet("select rating0_.rating_to_id , count(rating0_.rating_to_id), avg(rating0_.rating_points) as col_0_0_  from rating rating0_  group by rating0_.rating_to_id having rating0_.rating_to_id="+ user.getId());
+				while(rsGetRating.next())
+				{
+					user.setRatingCount( rsGetRating.getInt(2));
+					user.setTotalRating(rsGetRating.getFloat(3) );
+				}
+				
+				//user.setTotalRating(ratingRepo.getTotalRating(user.getId()));
+				
+				user.setTotalReviews(reviewRepo.countByReviewTo(user));
+				
 				result.add(user);
 			}
 			//result= userRepo.findNearByMe(lat,lng);
@@ -338,6 +361,24 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 			{
 				System.out.println("in search");
 				result= userRepo.findBySearchText(search);	
+				
+				//result.forEach(user -> user.setTotalRating(ratingRepo.getTotalRating(user.getId())));
+				
+				for(User user : result)
+				{
+					SqlRowSet rsGetRating = template.queryForRowSet("select rating0_.rating_to_id , count(rating0_.rating_to_id), avg(rating0_.rating_points) as col_0_0_  from rating rating0_  group by rating0_.rating_to_id having rating0_.rating_to_id="+ user.getId());
+					while(rsGetRating.next())
+					{
+						user.setRatingCount( rsGetRating.getInt(2));
+						user.setTotalRating(rsGetRating.getFloat(3) );
+					}
+					user.setTotalReviews(reviewRepo.countByReviewTo(user));
+				}
+				
+				
+				//result.forEach(user -> user.setTotalReviews(reviewRepo.countByReviewTo(user)));
+				
+				
 			}
 			
 		}
